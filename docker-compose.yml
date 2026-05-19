@@ -1,0 +1,84 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: chat-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-123456}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-chat_db}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./MYSQL/chat_db.sql:/docker-entrypoint-initdb.d/01-chat-db.sql:ro
+      - ./MYSQL/system_notification.sql:/docker-entrypoint-initdb.d/02-system-notification.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: chat-redis
+    restart: always
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./chat-backend
+      target: prod
+      args:
+        SPRING_PROFILES_ACTIVE: prod
+    container_name: chat-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./docker.env
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: mysql
+      DB_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./chat-frontend
+      target: prod
+    container_name: chat-frontend
+    restart: always
+    ports:
+      - "8081:80"
+      - "443:443"
+    volumes:
+      - ./ssl/wchat-online.top.pem:/etc/nginx/certs/cert.pem:ro
+      - ./ssl/wchat-online.top.key:/etc/nginx/certs/cert.key:ro
+    extra_hosts:
+      - "webrtc-sfu:${SFU_HOST_IP:-host-gateway}"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # webrtc-sfu is managed via PM2 directly (not in Docker)
+  # mediasoup requires native host networking for RTC ports
+  # See /opt/webchat/ecosystem.config.js
+
+volumes:
+  mysql_data:
+  uploads_data:

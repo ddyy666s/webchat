@@ -1,0 +1,18 @@
+/** 自定义组件样式 */
+.section-card { border-radius: 16px !important; border: none !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important; }
+.beautiful-dialog .el-dialog { border-radius: 20px !important; }
+.beautiful-confirm .el-dialog__header { display: none; }
+.beautiful-confirm { border-radius: 24px !important; width: 720px !important; }
+.beautiful-confirm .el-dialog__body { padding: 8px 24px 12px; }
+.confirm-body { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 20px 12px 0; }
+.confirm-icon .el-icon { display: flex; }
+.confirm-icon.warning svg { color: var(--color-warning); }
+.confirm-icon.danger svg { color: var(--color-danger); }
+.confirm-icon.info svg { color: var(--color-primary); }
+.confirm-message { font-size: 16px; color: var(--text-primary); text-align: center; line-height: 1.8; max-width: 90%; font-weight: 500; }
+.confirm-footer { display: flex; justify-content: center; gap: 14px; padding: 4px 0 8px; }
+.btn-cancel, .btn-confirm { min-width: 120px; padding: 10px 24px !important; border-radius: 14px !important; font-weight: 600 !important; font-size: 15px !important; letter-spacing: 0.5px; }
+.beautiful-drawer .el-drawer { border-radius: var(--border-radius-large) 0 0 var(--border-radius-large) !important; }
+
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }

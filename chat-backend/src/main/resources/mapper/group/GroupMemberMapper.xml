@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chat.chat_backend.modules.group.mapper.GroupMemberMapper">
+
+    <select id="findByGroupId" resultType="com.chat.chat_backend.modules.group.entity.GroupMember">
+        SELECT * FROM group_member WHERE group_id = #{groupId}
+    </select>
+
+    <select id="findByUserId" resultType="com.chat.chat_backend.modules.group.entity.GroupMember">
+        SELECT * FROM group_member WHERE user_id = #{userId}
+    </select>
+
+    <update id="incrementUnreadCount">
+        UPDATE group_member
+        SET unread_count = unread_count + 1
+        WHERE group_id = #{groupId} AND user_id != #{fromUserId}
+    </update>
+
+    <update id="clearUnreadCount">
+        UPDATE group_member
+        SET unread_count = 0, last_read_time = NOW()
+        WHERE group_id = #{groupId} AND user_id = #{userId}
+    </update>
+
+</mapper>

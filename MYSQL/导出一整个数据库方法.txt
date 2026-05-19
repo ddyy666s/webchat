@@ -1,0 +1,1 @@
+mysqldump -u root -p chat_db > C:\Users\邓亚\chat_db_backup.sql

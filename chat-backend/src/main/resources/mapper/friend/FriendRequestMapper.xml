@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chat.chat_backend.modules.friend.mapper.FriendRequestMapper">
+    <select id="findPendingRequests" resultType="com.chat.chat_backend.modules.friend.entity.FriendRequest">
+        SELECT * FROM friend_request WHERE to_user_id = #{toUserId} AND status = 0 ORDER BY created_at DESC
+    </select>
+    <select id="findPendingRequest" resultType="com.chat.chat_backend.modules.friend.entity.FriendRequest">
+        SELECT * FROM friend_request WHERE from_user_id = #{fromUserId} AND to_user_id = #{toUserId} AND status = 0
+    </select>
+    <update id="expireOldRequests">
+        UPDATE friend_request SET status = 3, expire_time = NOW() WHERE status = 0 AND expire_time &lt; NOW()
+    </update>
+</mapper>

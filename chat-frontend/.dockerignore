@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.gitignore
+*.md
+.vscode
+.editorconfig
+.prettierrc.json
+eslint.config.ts
+.gitattributes
+.env
+.env.development
+.env.local
+.env.production
